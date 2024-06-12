@@ -26,7 +26,7 @@ export default defineComponent({
     ];
 
     onMounted(async () => {
-      const response = await axios.get('https://javascript-test-task.onrender.com/api/leads');
+      const response = await axios.get('http://localhost:3000/api/leads');
       leads.value = response.data;
     });
 
