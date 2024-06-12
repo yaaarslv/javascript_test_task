@@ -14,6 +14,9 @@ export class AmoService {
         this.baseUrl = Config.AMOCRM_BASE_URL;
     }
 
+    /**
+     * Метод получения всех сделок с их контактами, статусами и ответственными лицами
+     */
     async getLeadsWithContacts_Statuses_ResponsibleUsers(query?: string): Promise<Lead[]> {
         const allLeads = await this.getLeads(query);
         const allContacts = await this.getContacts();
@@ -48,6 +51,9 @@ export class AmoService {
         return leads;
     }
 
+    /**
+     * Метод получения всех сделок
+     */
     async getLeads(query?: string) {
         if (query) {
             return this.makeRequest('leads', `${query}`, 'contacts');
@@ -56,18 +62,30 @@ export class AmoService {
         }
     }
 
+    /**
+     * Метод получения всех контактов
+     */
     async getContacts() {
         return this.makeRequest('contacts');
     }
 
+    /**
+     * Метод получения всех пайплайнов
+     */
     async getPipelines() {
         return this.makeRequest('leads/pipelines');
     }
 
+    /**
+     * Метод получения всех ответственных лиц
+     */
     async getUsers() {
         return this.makeRequest('users');
     }
 
+    /**
+     * Метод запроса данных с сервера amoCRM
+     */
     async makeRequest(endpoint: string, query: string = '', with_: string = '') {
         await this.authService.auth();
         const url = `${this.baseUrl}/api/v4/${endpoint}?query=${query}&with=${with_}`;
@@ -81,6 +99,9 @@ export class AmoService {
         return response.data._embedded[dataName];
     }
 
+    /**
+     * Метод поиска статуса по id пайплайна
+     */
     async findStatusByPipelineId(status_id: number, pipeline_id: number, allPipelines: any[]): Promise<string> {
         const pipeline = allPipelines.find(p => p.id === pipeline_id);
         if (pipeline) {
@@ -93,6 +114,9 @@ export class AmoService {
         return ""
     }
 
+    /**
+     * Метод поиска ответственного лица по его id
+     */
     async findResponsibleUserById(user_id: number, allResponsibleUsers: any[]): Promise<string> {
         const user = allResponsibleUsers.find(user => user.id === user_id);
         if (user) {
@@ -102,6 +126,9 @@ export class AmoService {
         return ""
     }
 
+    /**
+     * Метод поиска электронной почты и номера по id контакта
+     */
     async findEmailAndPhoneNumberByContactId(contact_id: number, allContacts: any[]): Promise<{}> {
         const contact = allContacts.find(contact => contact.id === contact_id);
 
